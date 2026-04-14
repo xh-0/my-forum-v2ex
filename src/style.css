@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+/* 如果你有自定义的背景色或变量，在 v4 中可以直接这样写： */
+@theme {
+  --color-v2-bg: #e2e2e2;
+  --color-v2-surface: #ffffff;
+  --color-v2-link: #778087;
+}
+
+body {
+  background-color: var(--color-v2-bg);
+}
