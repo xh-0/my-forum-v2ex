@@ -27,9 +27,11 @@ export const createPost = (data: { title: string; content: string }) => {
   return request.post('/protected/posts', data);
 };
 
-// 发表评论 (受保护)
-export const addComment = (data: { postId: number; content: string }) => {
-  return request.post('/protected/comments', data);
+// 发表评论 (受保护 /api/protected/posts/:id/comments)
+export const addComment = (postId: number | string, content: string) => {
+  return request.post(`/protected/posts/${postId}/comments`, {
+    content: content
+  });
 };
 
 // 登录接口

@@ -35,9 +35,11 @@
           ></textarea>
           <button
             @click="handleComment"
-            class="mt-2 bg-gray-800 text-white px-4 py-1.5 rounded text-sm"
+            :disabled="loading"
+            class="mt-2 bg-gray-800 text-white px-4 py-1.5 rounded text-sm disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
           >
-            回复
+            <span v-if="loading">正在发送...</span>
+            <span v-else>回复</span>
           </button>
         </div>
         <div
@@ -61,7 +63,7 @@ import { getPostDetail, addComment } from "@/api/forum";
 const route = useRoute();
 const post = ref<any>(null);
 const commentText = ref("");
-// 注意：Token 现在由 axios 拦截器自动处理，这里不需要手动获取并传递了
+const loading = ref(false);
 const hasToken = !!localStorage.getItem("token");
 
 const loadPost = async () => {
@@ -75,19 +77,27 @@ const loadPost = async () => {
 };
 
 const handleComment = async () => {
-  if (!commentText.value) return;
+  if (!commentText.value.trim()) return;
 
+  loading.value = true;
   try {
-    // 3. 适配新的 addComment 参数结构 { postId, content }
-    await addComment({
-      postId: post.value.id,
-      content: commentText.value,
-    });
+    // 这里的 route.params.id 就是路径里的帖子 ID
+    await addComment(route.params.id as string, commentText.value);
 
+    // 成功后的逻辑
     commentText.value = "";
-    await loadPost(); // 刷新详情和评论列表
-  } catch (err) {
-    alert("评论发表失败，请重试");
+    alert("评论发表成功");
+
+    // 重新加载帖子详情或评论列表，实现回显
+    // await loadPost();
+  } catch (err: any) {
+    if (err.response?.status === 401) {
+      alert("请先登录");
+    } else {
+      alert(err.response?.data?.error || "评论失败");
+    }
+  } finally {
+    loading.value = false;
   }
 };
 
