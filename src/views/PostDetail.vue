@@ -1,5 +1,10 @@
 <template>
-  <div class="max-w-5xl mx-auto px-4 pb-10" v-if="post">
+  <div class="max-w-5xl mx-auto px-4 p-5" v-if="post">
+    <div class="flex items-center justify-between mb-4">
+      <router-link to="/" class="text-gary-500 hover:underline">
+        返回首页
+      </router-link>
+    </div>
     <div class="bg-white shadow-sm p-5 rounded-lg border border-gray-200 mb-4">
       <h1 class="text-2xl font-semibold mb-4">{{ post.title }}</h1>
       <p class="text-gray-700 whitespace-pre-wrap leading-relaxed">

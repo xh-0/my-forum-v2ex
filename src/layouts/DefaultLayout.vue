@@ -5,7 +5,17 @@
       <div class="flex-1 bg-v2-surface rounded shadow-sm min-w-0">
         <router-view />
       </div>
-      <aside class="w-72 hidden md:block">
+      <div class="w-72 hidden md:block">
+        <!-- 发帖 -->
+        <div class="bg-v2-surface p-4 rounded shadow-sm mb-4">
+          <router-link to="/new">
+            <button
+              class="w-full bg-v2-primary text-black py-2 px-4 rounded shadow-sm"
+            >
+              发帖
+            </button>
+          </router-link>
+        </div>
         <div class="bg-v2-surface p-4 rounded shadow-sm">
           <h3 class="text-sm font-bold text-gray-500 border-b pb-2 mb-2">
             关于
@@ -14,7 +24,7 @@
             这是一个基于 Vue 3 + Giscus 的静态 V2EX 克隆项目。
           </p>
         </div>
-      </aside>
+      </div>
     </main>
   </div>
 </template>
