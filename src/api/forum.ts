@@ -31,3 +31,14 @@ export const createPost = (data: { title: string; content: string }) => {
 export const addComment = (data: { postId: number; content: string }) => {
   return request.post('/protected/comments', data);
 };
+
+// 登录接口
+export const login = (data: { username: string; password?: string }) => {
+  // 注意：此处路径需对应你 Hono 后端的登录路由
+  return request.post('/login', data);
+};
+
+// 注册接口
+export const register = (data: { username: string; password?: string }) => {
+  return request.post('/register', data);
+};

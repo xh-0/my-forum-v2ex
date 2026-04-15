@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const request = axios.create({
   // 替换为你刚才部署成功的线上 Worker 地址
-  baseURL: 'https://my-forum-api.dusk2.workers.dev/api',
+  baseURL: import.meta.env.VITE_API_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'

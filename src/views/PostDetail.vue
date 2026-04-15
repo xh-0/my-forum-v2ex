@@ -16,7 +16,7 @@
         :key="comment.id"
         class="p-4 border-b border-gray-100 flex space-x-3"
       >
-        <span class="text-xs text-gray-300">{{ index + 1 }}</span>
+        <span class="text-xs text-gray-300">{{ Number(index) + 1 }}</span>
         <div class="flex-grow">
           <div class="text-xs font-bold text-gray-600 mb-1">
             {{ comment.authorId }}
@@ -26,7 +26,7 @@
       </div>
 
       <div class="p-4 bg-gray-50">
-        <div v-if="token">
+        <div v-if="hasToken">
           <textarea
             v-model="commentText"
             class="w-full p-2 border rounded-md"
@@ -55,22 +55,40 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import { api } from "../api";
+// 1. 导入你封装的接口函数
+import { getPostDetail, addComment } from "@/api/forum";
 
 const route = useRoute();
 const post = ref<any>(null);
 const commentText = ref("");
-const token = localStorage.getItem("token");
+// 注意：Token 现在由 axios 拦截器自动处理，这里不需要手动获取并传递了
+const hasToken = !!localStorage.getItem("token");
 
 const loadPost = async () => {
-  post.value = await api.getPostDetail(route.params.id as string);
+  try {
+    // 2. 使用 getPostDetail 替换 api.getPostDetail
+    const res = await getPostDetail(route.params.id as string);
+    post.value = res;
+  } catch (err) {
+    console.error("加载帖子失败", err);
+  }
 };
 
 const handleComment = async () => {
   if (!commentText.value) return;
-  await api.addComment(post.value.id, commentText.value, token!);
-  commentText.value = "";
-  await loadPost(); // 刷新
+
+  try {
+    // 3. 适配新的 addComment 参数结构 { postId, content }
+    await addComment({
+      postId: post.value.id,
+      content: commentText.value,
+    });
+
+    commentText.value = "";
+    await loadPost(); // 刷新详情和评论列表
+  } catch (err) {
+    alert("评论发表失败，请重试");
+  }
 };
 
 onMounted(loadPost);

@@ -37,10 +37,8 @@ onMounted(() => {
             {{ item.title }}
           </router-link>
           <div class="text-xs text-gray-400 mt-1">
-            <span class="bg-gray-100 px-1 rounded">{{ item.author_id }}</span>
-            <span class="ml-2">{{
-              new Date(item.created_at).toLocaleString()
-            }}</span>
+            <span class="bg-gray-100 px-1 rounded">{{ item.authorId }}</span>
+            <span class="ml-2">{{ item.createdAt }}</span>
           </div>
         </div>
       </div>
