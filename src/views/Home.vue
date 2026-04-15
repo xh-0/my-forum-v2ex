@@ -8,6 +8,7 @@ const loading = ref(true);
 const fetchPosts = async () => {
   try {
     const data = await getPostList();
+    console.log("data: ", data);
     posts.value = data;
   } catch (err) {
     console.error("获取列表失败", err);
