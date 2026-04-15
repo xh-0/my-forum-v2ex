@@ -38,14 +38,14 @@
             rows="3"
             placeholder="请尽量让回复对别人有帮助"
           ></textarea>
-          <button
+          <t-button
             @click="handleComment"
             :disabled="loading"
             class="mt-2 bg-gray-800 text-white px-4 py-1.5 rounded text-sm disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
           >
             <span v-if="loading">正在发送...</span>
             <span v-else>回复</span>
-          </button>
+          </t-button>
         </div>
         <div
           v-else
