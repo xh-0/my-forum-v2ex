@@ -116,7 +116,7 @@ const userId = ref(localStorage.getItem("token")); // 临时占位
 onMounted(async () => {
   try {
     // 实际项目中这里应该调用获取“指定用户”帖子的接口
-    const allPosts = await getPostList();
+    const allPosts: any = await getPostList();
     // 模拟过滤当前用户的帖子
     posts.value = allPosts.filter(
       (p: any) => p.authorId === userStore.username
