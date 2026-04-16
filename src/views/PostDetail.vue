@@ -19,7 +19,7 @@
             {{ post.title }}
           </h1>
           <div class="flex items-center gap-2 text-xs text-gray-400">
-            <t-tag variant="light-outline" size="small" class="!text-[10px]"
+            <t-tag variant="light-outline" size="small" class="text-[10px]!"
               >问与答</t-tag
             >
             <span class="font-bold text-gray-700">{{ post.authorId }}</span>
@@ -38,14 +38,14 @@
 
       <div class="border-t border-gray-50 pt-6">
         <div
-          class="text-gray-800 leading-relaxed text-[15px] whitespace-pre-wrap break-words"
+          class="text-gray-800 leading-relaxed text-[15px] whitespace-pre-wrap wrap-break-word"
         >
           {{ post.content }}
         </div>
       </div>
     </t-card>
 
-    <t-card :bordered="false" class="!rounded-sm shadow-sm">
+    <t-card :bordered="false" class="rounded-sm! shadow-sm">
       <template #header>
         <div class="text-xs font-medium text-gray-400">
           {{ post.comments?.length || 0 }} 回复
@@ -79,19 +79,19 @@
       </div>
 
       <div class="mt-8 pt-6 border-t border-gray-100">
-        <div v-if="hasToken" class="flex flex-col gap-3">
+        <div v-if="userStore.isLoggedIn" class="flex flex-col gap-3">
           <div class="text-sm font-bold text-gray-600">添加一条新回复</div>
           <t-textarea
             v-model="commentText"
             placeholder="请尽量让回复对别人有帮助"
             :autosize="{ minRows: 4 }"
-            class="!bg-gray-50 !border-gray-200"
+            class="bg-gray-50! border-gray-200!"
           />
           <div class="flex justify-end">
             <t-button
               :loading="loading"
               @click="handleComment"
-              class="!bg-[#333] !border-none px-6"
+              class="bg-[#333]! border-none! px-6"
             >
               发送回复
             </t-button>
@@ -119,11 +119,14 @@ import { useRoute } from "vue-router";
 import { getPostDetail, addComment } from "@/api/forum";
 import { MessagePlugin } from "tdesign-vue-next";
 
+import { useUserStore } from "@/store/user";
+
 const route = useRoute();
+const userStore = useUserStore();
+
 const post = ref<any>(null);
 const commentText = ref("");
 const loading = ref(false);
-const hasToken = !!localStorage.getItem("token");
 
 const loadPost = async () => {
   try {
@@ -140,14 +143,10 @@ const handleComment = async () => {
   try {
     await addComment(route.params.id as string, commentText.value);
     commentText.value = "";
-    MessagePlugin.success("回复已发送");
-    await loadPost(); // 刷新回显
+    MessagePlugin.success("回复成功");
+    await loadPost();
   } catch (err: any) {
-    if (err.response?.status === 401) {
-      MessagePlugin.warning("登录状态失效，请重新登录");
-    } else {
-      MessagePlugin.error(err.response?.data?.error || "评论失败");
-    }
+    MessagePlugin.error(err.response?.data?.error || "评论失败");
   } finally {
     loading.value = false;
   }

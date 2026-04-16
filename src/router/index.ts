@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import DefaultLayout from '../layouts/DefaultLayout.vue'
+import { useUserStore } from '@/store/user';
+import { MessagePlugin } from 'tdesign-vue-next';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -28,10 +30,21 @@ const routes: RouteRecordRaw[] = [
   }
 ]
 
-
 const router = createRouter({
   history: createWebHistory(),
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  const userStore = useUserStore();
+
+  // 如果页面需要登录且用户未登录
+  if (to.meta.requiresAuth && !userStore.isLoggedIn) {
+    MessagePlugin.warning('请先登录');
+    next('/login');
+  } else {
+    next();
+  }
+});
 
 export default router;

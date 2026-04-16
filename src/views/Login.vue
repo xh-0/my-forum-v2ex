@@ -1,41 +1,4 @@
-<script setup lang="ts">
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { login } from "@/api/forum";
 
-const router = useRouter();
-const username = ref("");
-const password = ref("");
-const loading = ref(false);
-const errorMsg = ref("");
-
-const handleLogin = async () => {
-  if (!username.value) return alert("请输入用户名");
-
-  loading.value = true;
-  errorMsg.value = "";
-
-  try {
-    // 1. 调用登录接口
-    const res = (await login({
-      username: username.value,
-      password: password.value,
-    })) as any;
-
-    // 2. 存储 Token 和用户信息
-    // 假设后端返回结构为 { token: '...', user: { username: '...' } }
-    localStorage.setItem("token", res.token);
-    localStorage.setItem("username", res.user.username);
-
-    // 3. 跳转到首页
-    router.push("/");
-  } catch (err: any) {
-    errorMsg.value = err.response?.data?.message || "登录失败，请检查网络";
-  } finally {
-    loading.value = false;
-  }
-};
-</script>
 
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-100">
@@ -76,3 +39,47 @@ const handleLogin = async () => {
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { login } from "@/api/forum";
+import { useUserStore } from "@/store/user";
+import { MessagePlugin } from "tdesign-vue-next";
+
+const userStore = useUserStore();
+
+const router = useRouter();
+const username = ref("");
+const password = ref("");
+const loading = ref(false);
+const errorMsg = ref("");
+
+const handleLogin = async () => {
+  if (!username.value) return alert("请输入用户名");
+
+  loading.value = true;
+  errorMsg.value = "";
+
+  try {
+    // 1. 调用登录接口
+    const res = (await login({
+      username: username.value,
+      password: password.value,
+    })) as any;
+
+    // 2. 存储 Token 和用户信息
+    // 假设后端返回结构为 { token: '...', user: { username: '...' } }
+    // localStorage.setItem("token", res.token);
+    // localStorage.setItem("username", res.user.username);
+    userStore.setLoginInfo(res.token, res.user.username);
+    MessagePlugin.success("欢迎回来");
+    // 3. 跳转到首页
+    router.push("/");
+  } catch (err: any) {
+    errorMsg.value = err.response?.data?.message || "登录失败，请检查网络";
+  } finally {
+    loading.value = false;
+  }
+};
+</script>

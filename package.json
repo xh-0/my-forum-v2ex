@@ -13,6 +13,7 @@
     "@vueuse/core": "^14.2.1",
     "axios": "^1.15.0",
     "pinia": "^3.0.4",
+    "pinia-plugin-persistedstate": "^4.7.1",
     "tdesign-vue-next": "^1.19.1",
     "vue": "^3.5.32",
     "vue-router": "^5.0.4"

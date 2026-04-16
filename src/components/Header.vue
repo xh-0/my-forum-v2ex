@@ -15,7 +15,7 @@
       </router-link>
 
       <nav class="flex items-center gap-2">
-        <template v-if="!isLoggedIn">
+        <template v-if="!userStore.isLoggedIn">
           <t-button variant="text" size="small" @click="$router.push('/login')"
             >登录</t-button
           >
@@ -38,11 +38,11 @@
                   shape="round"
                   class="bg-blue-100 text-blue-600"
                 >
-                  {{ username?.[0].toUpperCase() }}
+                  {{ userStore.avatarLetter }}
                 </t-avatar>
                 <span
                   class="text-sm font-medium text-gray-700 hidden sm:inline"
-                  >{{ username }}</span
+                  >{{ userStore.username }}</span
                 >
                 <t-icon name="chevron-down" size="14px" class="text-gray-400" />
               </div>
@@ -55,14 +55,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, h } from "vue";
+import { h } from "vue";
 import { useRouter } from "vue-router";
 // 记得从 tdesign 引入图标
 import { Icon as TIcon } from "tdesign-icons-vue-next";
 
+import { useUserStore } from "@/store/user";
+const userStore = useUserStore();
+
 const router = useRouter();
-const isLoggedIn = ref(!!localStorage.getItem("token"));
-const username = ref(localStorage.getItem("username"));
 
 // 下拉菜单配置
 const userOptions = [
@@ -89,17 +90,17 @@ const handleMenuClick = (data: any) => {
     logout();
   } else if (data.value === "profile") {
     router.push("/profile");
+  } else if (data.value === "posts") {
+    router.push("/");
   }
 };
 
 const logout = () => {
-  localStorage.clear();
-  window.location.href = "/"; // 彻底刷新状态
+  userStore.logout();
 };
 </script>
 
 <style scoped>
-/* 深度作用选择器，确保 TDesign 按钮在 Header 中更紧凑 */
 :deep(.t-button--size-s) {
   padding: 0 12px;
 }
