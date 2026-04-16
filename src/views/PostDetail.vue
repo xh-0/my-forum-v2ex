@@ -1,69 +1,123 @@
 <template>
-  <div class="max-w-5xl mx-auto px-4 p-5" v-if="post">
-    <div class="flex items-center justify-between mb-4">
-      <router-link to="/" class="text-gary-500 hover:underline">
-        返回首页
-      </router-link>
-    </div>
-    <div class="bg-white shadow-sm p-5 rounded-lg border border-gray-200 mb-4">
-      <h1 class="text-2xl font-semibold mb-4">{{ post.title }}</h1>
-      <p class="text-gray-700 whitespace-pre-wrap leading-relaxed">
-        {{ post.content }}
-      </p>
+  <div class="space-y-4 pb-12" v-if="post">
+    <div
+      class="bg-white border border-gray-200 rounded-sm px-4 py-3 flex items-center text-sm shadow-sm"
+    >
+      <router-link to="/" class="text-blue-500 hover:underline"
+        >V2EX CLONE</router-link
+      >
+      <span class="mx-2 text-gray-300">›</span>
+      <span class="text-gray-500 truncate">主题详情</span>
     </div>
 
-    <div class="bg-white shadow-sm rounded-lg border border-gray-200">
-      <div class="p-3 border-b text-sm text-gray-500 bg-gray-50">
-        {{ post.comments?.length || 0 }} 回复
-      </div>
+    <t-card :bordered="false" class="rounded-sm! shadow-sm">
       <div
-        v-for="(comment, index) in post.comments"
-        :key="comment.id"
-        class="p-4 border-b border-gray-100 flex space-x-3"
+        class="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-6"
       >
-        <span class="text-xs text-gray-300">{{ Number(index) + 1 }}</span>
-        <div class="flex-grow">
-          <div class="text-xs font-bold text-gray-600 mb-1">
-            {{ comment.authorId }}
+        <div class="flex-1">
+          <h1 class="text-2xl font-bold text-gray-900 leading-tight mb-3">
+            {{ post.title }}
+          </h1>
+          <div class="flex items-center gap-2 text-xs text-gray-400">
+            <t-tag variant="light-outline" size="small" class="!text-[10px]"
+              >问与答</t-tag
+            >
+            <span class="font-bold text-gray-700">{{ post.authorId }}</span>
+            <span>•</span>
+            <span>发布于 {{ post.createdAt }}</span>
           </div>
-          <div class="text-gray-800 text-sm">{{ comment.content }}</div>
+        </div>
+        <t-avatar
+          shape="round"
+          size="large"
+          class="hidden md:block bg-blue-50 text-blue-500 font-bold"
+        >
+          {{ post.authorId?.[0].toUpperCase() }}
+        </t-avatar>
+      </div>
+
+      <div class="border-t border-gray-50 pt-6">
+        <div
+          class="text-gray-800 leading-relaxed text-[15px] whitespace-pre-wrap break-words"
+        >
+          {{ post.content }}
         </div>
       </div>
+    </t-card>
 
-      <div class="p-4 bg-gray-50">
-        <div v-if="hasToken">
-          <textarea
+    <t-card :bordered="false" class="!rounded-sm shadow-sm">
+      <template #header>
+        <div class="text-xs font-medium text-gray-400">
+          {{ post.comments?.length || 0 }} 回复
+        </div>
+      </template>
+
+      <div class="divide-y divide-gray-50">
+        <t-comment
+          v-for="(comment, index) in post.comments"
+          :key="comment.id"
+          :author="comment.authorId"
+          :datetime="comment.createdAt"
+          class="py-4 hover:bg-gray-50/50 transition-colors"
+        >
+          <template #avatar>
+            <t-avatar size="small" class="bg-gray-100 text-gray-500 font-bold">
+              {{ comment.authorId?.[0].toUpperCase() }}
+            </t-avatar>
+          </template>
+          <template #content>
+            <div class="text-gray-800 text-[14px] leading-normal mt-1">
+              {{ comment.content }}
+            </div>
+          </template>
+          <template #actions>
+            <span class="text-[10px] text-gray-200 font-mono"
+              >#{{ Number(index) + 1 }}</span
+            >
+          </template>
+        </t-comment>
+      </div>
+
+      <div class="mt-8 pt-6 border-t border-gray-100">
+        <div v-if="hasToken" class="flex flex-col gap-3">
+          <div class="text-sm font-bold text-gray-600">添加一条新回复</div>
+          <t-textarea
             v-model="commentText"
-            class="w-full p-2 border rounded-md"
-            rows="3"
             placeholder="请尽量让回复对别人有帮助"
-          ></textarea>
-          <t-button
-            @click="handleComment"
-            :disabled="loading"
-            class="mt-2 bg-gray-800 text-white px-4 py-1.5 rounded text-sm disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-          >
-            <span v-if="loading">正在发送...</span>
-            <span v-else>回复</span>
-          </t-button>
+            :autosize="{ minRows: 4 }"
+            class="!bg-gray-50 !border-gray-200"
+          />
+          <div class="flex justify-end">
+            <t-button
+              :loading="loading"
+              @click="handleComment"
+              class="!bg-[#333] !border-none px-6"
+            >
+              发送回复
+            </t-button>
+          </div>
         </div>
         <div
           v-else
-          class="text-center py-4 text-gray-500 border-2 border-dashed border-gray-200"
+          class="text-center py-8 bg-gray-50 rounded-sm border border-dashed border-gray-200"
         >
-          你要先登录才能发表回复。
-          <router-link to="/login" class="text-blue-500">去登录</router-link>
+          <p class="text-gray-400 text-sm">
+            你需要登录后方可发表回复
+            <router-link to="/login" class="text-blue-500 font-bold ml-1"
+              >立即登录</router-link
+            >
+          </p>
         </div>
       </div>
-    </div>
+    </t-card>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
-// 1. 导入你封装的接口函数
 import { getPostDetail, addComment } from "@/api/forum";
+import { MessagePlugin } from "tdesign-vue-next";
 
 const route = useRoute();
 const post = ref<any>(null);
@@ -73,11 +127,9 @@ const hasToken = !!localStorage.getItem("token");
 
 const loadPost = async () => {
   try {
-    // 2. 使用 getPostDetail 替换 api.getPostDetail
-    const res = await getPostDetail(route.params.id as string);
-    post.value = res;
+    post.value = await getPostDetail(route.params.id as string);
   } catch (err) {
-    console.error("加载帖子失败", err);
+    MessagePlugin.error("无法加载主题内容");
   }
 };
 
@@ -86,20 +138,15 @@ const handleComment = async () => {
 
   loading.value = true;
   try {
-    // 这里的 route.params.id 就是路径里的帖子 ID
     await addComment(route.params.id as string, commentText.value);
-
-    // 成功后的逻辑
     commentText.value = "";
-    alert("评论发表成功");
-
-    // 重新加载帖子详情或评论列表，实现回显
-    // await loadPost();
+    MessagePlugin.success("回复已发送");
+    await loadPost(); // 刷新回显
   } catch (err: any) {
     if (err.response?.status === 401) {
-      alert("请先登录");
+      MessagePlugin.warning("登录状态失效，请重新登录");
     } else {
-      alert(err.response?.data?.error || "评论失败");
+      MessagePlugin.error(err.response?.data?.error || "评论失败");
     }
   } finally {
     loading.value = false;
@@ -108,3 +155,16 @@ const handleComment = async () => {
 
 onMounted(loadPost);
 </script>
+
+<style scoped>
+/* 调整 TDesign Comment 的内部间距，使其更紧凑 */
+:deep(.t-comment__author) {
+  font-weight: 700;
+  color: #555;
+  font-size: 13px;
+}
+:deep(.t-comment__datetime) {
+  font-size: 11px;
+  color: #ccc;
+}
+</style>
