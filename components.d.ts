@@ -14,6 +14,18 @@ declare module 'vue' {
     Header: typeof import('./src/components/Header.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TAvatar: typeof import('tdesign-vue-next')['Avatar']
     TButton: typeof import('tdesign-vue-next')['Button']
+    TCard: typeof import('tdesign-vue-next')['Card']
+    TComment: typeof import('tdesign-vue-next')['Comment']
+    TDropdown: typeof import('tdesign-vue-next')['Dropdown']
+    TForm: typeof import('tdesign-vue-next')['Form']
+    TFormItem: typeof import('tdesign-vue-next')['FormItem']
+    THeadMenu: typeof import('tdesign-vue-next')['HeadMenu']
+    TIcon: typeof import('tdesign-vue-next')['Icon']
+    TInput: typeof import('tdesign-vue-next')['Input']
+    TSkeleton: typeof import('tdesign-vue-next')['Skeleton']
+    TTag: typeof import('tdesign-vue-next')['Tag']
+    TTextarea: typeof import('tdesign-vue-next')['Textarea']
   }
 }

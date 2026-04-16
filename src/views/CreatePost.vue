@@ -1,82 +1,140 @@
+<template>
+  <div class="space-y-4">
+    <div
+      class="bg-white border border-gray-200 rounded-sm px-4 py-3 shadow-sm flex items-center text-sm"
+    >
+      <router-link to="/" class="text-blue-500 hover:underline"
+        >V2EX CLONE</router-link
+      >
+      <span class="mx-2 text-gray-400">›</span>
+      <span class="text-gray-600 font-medium">创作新话题</span>
+    </div>
+
+    <t-card :bordered="false" class="shadow-sm !rounded-sm">
+      <t-form
+        ref="form"
+        :data="formData"
+        :rules="rules"
+        label-align="top"
+        @submit="onSubmit"
+      >
+        <t-form-item name="title" label="话题标题">
+          <t-input
+            v-model="formData.title"
+            placeholder="请输入话题标题，如果标题能够表达完整内容，正文可以为空"
+            size="large"
+            class="!bg-gray-50 border-none"
+          />
+        </t-form-item>
+
+        <t-form-item name="content" label="正文内容">
+          <t-textarea
+            v-model="formData.content"
+            placeholder="请输入正文内容"
+            :autosize="{ minRows: 8, maxRows: 15 }"
+            class="!bg-gray-50"
+          />
+        </t-form-item>
+
+        <div
+          class="mt-6 flex items-center justify-between border-t border-gray-100 pt-4"
+        >
+          <div class="text-xs text-gray-400">
+            <p>• 请尽量发布对他人有帮助的内容</p>
+            <p>• 保持友善，尊重他人的观点</p>
+          </div>
+          <div class="flex gap-3">
+            <t-button variant="outline" theme="default" @click="$router.back()">
+              取消
+            </t-button>
+            <t-button
+              theme="primary"
+              type="submit"
+              :loading="submitting"
+              class="!bg-[#333] !border-none"
+            >
+              发布话题
+            </t-button>
+          </div>
+        </div>
+      </t-form>
+    </t-card>
+
+    <div class="bg-yellow-50 border border-yellow-100 rounded-sm p-4">
+      <h4
+        class="text-yellow-800 text-sm font-bold mb-2 flex items-center gap-1"
+      >
+        <t-icon name="info-circle-filled" size="small" />
+        发帖提示
+      </h4>
+      <ul class="text-xs text-yellow-700/80 space-y-1 list-disc list-inside">
+        <li>社区是一个讨论公共话题的地方，请不要发布过于私人的信息。</li>
+        <li>如果是一个具体的问题，请在标题中描述清楚。</li>
+      </ul>
+    </div>
+  </div>
+</template>
+
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { createPost } from "@/api/forum";
+import { MessagePlugin } from "tdesign-vue-next";
 
 const router = useRouter();
-const title = ref("");
-const content = ref("");
-const loading = ref(false);
+const submitting = ref(false);
 
-const handleSubmit = async () => {
-  if (!title.value.trim() || !content.value.trim()) {
-    alert("请填写完整信息");
+const formData = reactive({
+  title: "",
+  content: "",
+});
+
+// 表单校验规则
+const rules = {
+  title: [
+    { required: true, message: "标题是必填的", type: "error" },
+    { max: 120, message: "标题不能超过 120 个字符", type: "error" },
+  ],
+  content: [{ required: true, message: "正文内容不能为空", type: "error" }],
+};
+
+const onSubmit = async ({ validateResult, firstError }: any) => {
+  if (validateResult !== true) {
+    MessagePlugin.warning(firstError);
     return;
   }
 
-  loading.value = true;
+  submitting.value = true;
   try {
-    await createPost({
-      title: title.value,
-      content: content.value,
-    });
-    alert("发布成功！");
-    router.push("/"); // 发布成功返回首页
+    // 调用之前封装好的 createPost 接口
+    await createPost(formData);
+    MessagePlugin.success("话题发布成功");
+    router.push("/"); // 发布成功后跳转回首页
   } catch (err: any) {
-    alert(err.response?.data?.error || "发布失败，请登录后重试");
-    if (err.response?.status === 401) {
-      router.push("/login");
-    }
+    MessagePlugin.error(err.response?.data?.error || "发布失败，请稍后重试");
   } finally {
-    loading.value = false;
+    submitting.value = false;
   }
 };
 </script>
 
-<template>
-  <div class="container mx-auto max-w-4xl p-4">
-    <div class="bg-white shadow rounded-lg overflow-hidden">
-      <div class="bg-gray-50 px-4 py-2 border-b text-sm text-gray-600">
-        <router-link to="/" class="hover:underline">V2EX Clone</router-link>
-        <span class="mx-2">›</span> 发布新主题
-      </div>
+<style scoped>
+/* 深度修改 TDesign 表单标签样式，使其更符合 V2EX 这种硬朗风格 */
+:deep(.t-form__label) {
+  font-size: 13px;
+  font-weight: bold;
+  color: #666;
+  margin-bottom: 8px;
+}
 
-      <div class="p-4 space-y-4">
-        <div>
-          <label class="block text-sm font-bold mb-2 text-gray-700"
-            >主题标题</label
-          >
-          <input
-            v-model="title"
-            type="text"
-            placeholder="请在此输入标题"
-            class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-1 focus:ring-gray-400 outline-none"
-          />
-        </div>
+:deep(.t-input),
+:deep(.t-textarea__inner) {
+  border-radius: 2px;
+  border-color: #eee;
+}
 
-        <div>
-          <label class="block text-sm font-bold mb-2 text-gray-700"
-            >正文内容</label
-          >
-          <textarea
-            v-model="content"
-            rows="10"
-            placeholder="请在此输入正文"
-            class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-1 focus:ring-gray-400 outline-none font-mono"
-          ></textarea>
-        </div>
-
-        <div class="flex justify-between items-center">
-          <span class="text-xs text-gray-400">请保持友善，遵守社区规范。</span>
-          <button
-            @click="handleSubmit"
-            :disabled="loading"
-            class="bg-gray-800 text-white px-6 py-2 rounded hover:bg-gray-700 disabled:bg-gray-400"
-          >
-            {{ loading ? "发布中..." : "立即发布" }}
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
+:deep(.t-input:hover),
+:deep(.t-textarea__inner:hover) {
+  border-color: #ccc;
+}
+</style>
