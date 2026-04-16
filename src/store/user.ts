@@ -37,7 +37,7 @@ export const useUserStore = defineStore('user', {
 
   // 4. 持久化配置：自动与 localStorage 同步
   persist: {
-    key: 'v2ex-user-storage', // 存储在 localStorage 里的名字
+    key: 'dusk2-user-storage', // 存储在 localStorage 里的名字
     storage: localStorage,    // 默认也是 localStorage
   },
 });

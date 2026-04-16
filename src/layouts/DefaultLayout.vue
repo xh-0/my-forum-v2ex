@@ -21,7 +21,7 @@
             关于
           </h3>
           <p class="text-sm text-gray-600">
-            这是一个基于 Vue 3 + Giscus 的静态 V2EX 克隆项目。
+            这是一个基于 Vue 3 + Giscus 的静态 dusk2 克隆项目。
           </p>
         </div>
       </div>

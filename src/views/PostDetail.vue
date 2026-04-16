@@ -4,7 +4,7 @@
       class="bg-white border border-gray-200 rounded-sm px-4 py-3 flex items-center text-sm shadow-sm"
     >
       <router-link to="/" class="text-blue-500 hover:underline"
-        >V2EX CLONE</router-link
+        >DUSK2</router-link
       >
       <span class="mx-2 text-gray-300">›</span>
       <span class="text-gray-500 truncate">主题详情</span>

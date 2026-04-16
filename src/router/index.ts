@@ -25,6 +25,11 @@ const routes: RouteRecordRaw[] = [
         name: 'CreatePost',
         component: () => import('@/views/CreatePost.vue'),
         meta: { requiresAuth: true }
+      },
+      {
+        path: '/profile',
+        component: () => import('@/views/Profile.vue'),
+        meta: { requiresAuth: true } // 配合之前的路由守卫，未登录不能进
       }
     ]
   }

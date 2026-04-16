@@ -10,7 +10,7 @@
           V
         </div>
         <span class="text-lg font-bold tracking-tighter text-gray-800"
-          >V2EX CLONE</span
+          >DUSK2</span
         >
       </router-link>
 

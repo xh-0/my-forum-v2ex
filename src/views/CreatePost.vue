@@ -4,7 +4,7 @@
       class="bg-white border border-gray-200 rounded-sm px-4 py-3 shadow-sm flex items-center text-sm"
     >
       <router-link to="/" class="text-blue-500 hover:underline"
-        >V2EX CLONE</router-link
+        >DUSK2</router-link
       >
       <span class="mx-2 text-gray-400">›</span>
       <span class="text-gray-600 font-medium">创作新话题</span>
@@ -119,7 +119,7 @@ const onSubmit = async ({ validateResult, firstError }: any) => {
 </script>
 
 <style scoped>
-/* 深度修改 TDesign 表单标签样式，使其更符合 V2EX 这种硬朗风格 */
+/* 深度修改 TDesign 表单标签样式，使其更符合 dusk2 这种硬朗风格 */
 :deep(.t-form__label) {
   font-size: 13px;
   font-weight: bold;
