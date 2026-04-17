@@ -78,6 +78,11 @@ const userOptions = [
     prefixIcon: () => h(TIcon, { name: "chat" }),
   },
   {
+    content: "标签管理",
+    value: "tags",
+    prefixIcon: () => h(TIcon, { name: "tag" }),
+  },
+  {
     content: "注销登录",
     value: "logout",
     theme: "error",
@@ -92,6 +97,8 @@ const handleMenuClick = (data: any) => {
     router.push("/profile");
   } else if (data.value === "posts") {
     router.push("/");
+  } else if (data.value === "tags") {
+    router.push("/tagAdmin");
   }
 };
 

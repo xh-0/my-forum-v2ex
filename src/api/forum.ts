@@ -41,3 +41,22 @@ export const login = (data: { username: string; password?: string }) => {
 export const register = (data: { username: string; password?: string }) => {
   return request.post('/register', data);
 };
+
+/**
+ * 标签字典管理接口 (Dictionary API)
+ */
+
+// 获取所有分类标签 (公开)
+export const getCategories = () => request.get('/categories');
+
+// 新增分类标签 (管理端)
+export const addCategory = (data: { key: string; value: string; order: number }) =>
+  request.post('/admin/categories', data);
+
+// 更新分类标签 (管理端)
+export const updateCategory = (id: number, data: { key: string; value: string; order: number }) =>
+  request.post('/admin/categories', { id, ...data });
+
+// 删除分类标签 (管理端)
+export const deleteCategory = (id: number) =>
+  request.delete(`/admin/categories/${id}`);

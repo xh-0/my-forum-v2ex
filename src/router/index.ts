@@ -30,6 +30,11 @@ const routes: RouteRecordRaw[] = [
         path: '/profile',
         component: () => import('@/views/Profile.vue'),
         meta: { requiresAuth: true } // 配合之前的路由守卫，未登录不能进
+      },
+      {
+        path: '/tagAdmin',
+        component: () => import('@/views/TagAdmin.vue'),
+        meta: { requiresAuth: true } // 配合之前的路由守卫，未登录不能进
       }
     ]
   }

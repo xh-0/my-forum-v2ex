@@ -87,27 +87,20 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
-import { getPostList } from "@/api/forum";
+import { getCategories, getPostList } from "@/api/forum";
 
 const posts = ref<any[]>([]);
 const loading = ref(true);
 const currentTag = ref("all"); // 当前选中的标签
 
-const categories = [
-  { label: "全部", value: "all" },
-  { label: "技术", value: "tech" },
-  { label: "创意", value: "creative" },
-  { label: "好玩", value: "play" },
-  { label: "问与答", value: "qna" },
-  { label: "酷工作", value: "jobs" },
-];
+const categories = ref([{ label: "全部", value: "all" }]);
 
 const fetchPosts = async () => {
   loading.value = true;
   try {
     // 如果是 'all'，则不传参数，获取全部
     const tagParam = currentTag.value === "all" ? undefined : currentTag.value;
-    const data = await getPostList(tagParam);
+    const data: any = await getPostList(tagParam);
     posts.value = data;
   } catch (err) {
     console.error("获取列表失败", err);
@@ -121,7 +114,16 @@ const handleTabChange = (val: string) => {
   fetchPosts();
 };
 
-onMounted(fetchPosts);
+onMounted(async () => {
+  const dynamicTags: any = await getCategories();
+  // 将后端返回的 {key, value} 映射为前端需要的 {label, value}
+  const mappedTags = dynamicTags.map((item: any) => ({
+    label: item.value,
+    value: item.key,
+  }));
+  categories.value = [{ label: "全部", value: "all" }, ...mappedTags];
+  fetchPosts();
+});
 </script>
 
 <style scoped>
