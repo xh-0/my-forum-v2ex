@@ -8,14 +8,11 @@ export interface Post {
 }
 
 // 获取帖子列表 (公开)
-export const getPostList = () => {
-  return request.get('/posts');
+export const getPostList = (tag?: string) => {
+  return request.get('/posts', {
+    params: { tag }
+  });
 };
-// export const getPostList = async (): Promise<Post[]> => {
-//   // 这里实现获取帖子列表的逻辑
-//   const response = await fetch('/api/posts');
-//   return response.json();
-// }
 
 // 获取帖子详情 (公开)
 export const getPostDetail = (id: string | number) => {

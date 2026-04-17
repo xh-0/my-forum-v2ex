@@ -1,22 +1,25 @@
 <template>
   <div class="flex flex-col">
-    <div
-      class="bg-gray-50 px-4 py-2 border-b border-gray-100 flex items-center justify-between"
-    >
-      <div class="flex gap-4 text-sm font-medium">
-        <span class="text-gray-900 cursor-pointer border-b-2 border-gray-800"
-          >全部话题</span
+    <div class="bg-gray-50 px-4 border-b border-gray-100">
+      <div class="flex items-center h-10 gap-6 overflow-x-auto no-scrollbar">
+        <button
+          v-for="tab in categories"
+          :key="tab.value"
+          @click="handleTabChange(tab.value)"
+          :class="[
+            'text-sm whitespace-nowrap transition-colors relative h-full flex items-center',
+            currentTag === tab.value
+              ? 'text-blue-600 font-bold'
+              : 'text-gray-500 hover:text-gray-800',
+          ]"
         >
-        <span class="text-gray-400 hover:text-gray-600 cursor-pointer"
-          >最热</span
-        >
-        <span class="text-gray-400 hover:text-gray-600 cursor-pointer"
-          >技术</span
-        >
+          {{ tab.label }}
+          <div
+            v-if="currentTag === tab.value"
+            class="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"
+          ></div>
+        </button>
       </div>
-      <t-button variant="text" size="small" @click="fetchPosts">
-        <template #icon><t-icon name="refresh" /></template>
-      </t-button>
     </div>
 
     <div v-if="loading" class="p-4 space-y-6">
@@ -48,7 +51,6 @@
             >
               {{ item.title }}
             </router-link>
-
             <div
               v-if="item.commentCount"
               class="bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full text-xs font-bold"
@@ -61,57 +63,51 @@
             class="text-[12px] text-gray-400 mt-1.5 flex items-center flex-wrap gap-2"
           >
             <t-tag
-              variant="light"
+              variant="light-outline"
               size="small"
               class="!text-[10px] !px-1.5 !h-4"
-              >问与答</t-tag
+              >{{ item.tag || "全部" }}</t-tag
             >
-            <span
-              class="font-bold text-gray-600 hover:underline cursor-pointer"
-              >{{ item.authorId }}</span
-            >
+            <span class="font-bold text-gray-600">{{ item.authorId }}</span>
             <span class="text-gray-300">•</span>
             <span>{{ item.createdAt }}</span>
-            <template v-if="item.lastReplyUser">
-              <span class="text-gray-300">•</span>
-              <span
-                >最后回复来自
-                <strong class="text-gray-500">{{
-                  item.lastReplyUser
-                }}</strong></span
-              >
-            </template>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="p-3 text-center border-t border-gray-50">
-      <t-button
-        variant="text"
-        theme="default"
-        size="small"
-        class="text-gray-400"
+      <div
+        v-if="posts.length === 0"
+        class="p-20 text-center text-gray-400 text-sm"
       >
-        查看更多话题...
-      </t-button>
+        该分类下暂无讨论话题
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { getPostList } from "@/api/forum";
-// 引入 TDesign 图标
-import { Icon as TIcon } from "tdesign-icons-vue-next";
 
-const posts = ref<any>([]);
+const posts = ref<any[]>([]);
 const loading = ref(true);
+const currentTag = ref("all"); // 当前选中的标签
+
+const categories = [
+  { label: "全部", value: "all" },
+  { label: "技术", value: "tech" },
+  { label: "创意", value: "creative" },
+  { label: "好玩", value: "play" },
+  { label: "问与答", value: "qna" },
+  { label: "酷工作", value: "jobs" },
+];
 
 const fetchPosts = async () => {
   loading.value = true;
   try {
-    const data = await getPostList();
+    // 如果是 'all'，则不传参数，获取全部
+    const tagParam = currentTag.value === "all" ? undefined : currentTag.value;
+    const data = await getPostList(tagParam);
     posts.value = data;
   } catch (err) {
     console.error("获取列表失败", err);
@@ -120,15 +116,21 @@ const fetchPosts = async () => {
   }
 };
 
+const handleTabChange = (val: string) => {
+  currentTag.value = val;
+  fetchPosts();
+};
+
 onMounted(fetchPosts);
 </script>
 
 <style scoped>
-/* 限制标题只显示一行，保持列表整洁 */
-.line-clamp-1 {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  overflow: hidden;
+/* 隐藏滚动条但保留滚动功能 */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 </style>
