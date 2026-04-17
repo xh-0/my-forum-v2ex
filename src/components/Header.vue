@@ -7,7 +7,7 @@
         <div
           class="bg-gray-900 text-white w-8 h-8 flex items-center justify-center rounded-sm font-black text-xl group-hover:bg-blue-600 transition-colors"
         >
-          V
+          D
         </div>
         <span class="text-lg font-bold tracking-tighter text-gray-800"
           >DUSK2</span
