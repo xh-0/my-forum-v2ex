@@ -72,7 +72,7 @@ export const addCategory = (data: { key: string; value: string; order: number })
 
 // 更新分类标签 (管理端)
 // 后端现在支持从 body 解析 id，所以直接传对象即可
-export const updateCategory = (data: { id: number; key: string; value: string; order: number }) =>
+export const updateCategory = (data: { id: number | string; key: string; value: string; order: number }) =>
   request.post('/admin/categories', data);
 
 // 删除分类标签 (管理端)

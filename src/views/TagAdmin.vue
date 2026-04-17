@@ -80,15 +80,19 @@ const loading = ref(false);
 const visible = ref(false);
 const editingId = ref<number | null>(null);
 
-// 初始化表单数据
-const initialForm = { key: "", value: "", order: 0 };
+// { id: number; key: string; value: string; order: number; }
+const initialForm = { id: "", key: "", value: "", order: 0 };
 const formData = ref({ ...initialForm });
 
 const columns = [
-  { colKey: "key", title: "Key (ID)", width: 120 },
-  { colKey: "value", title: "显示名称" },
+  { colKey: "id", title: "序号", width: 50, align: "center" },
+  { colKey: "key", title: "Key", width: 120 },
+  { colKey: "value", title: "名称" },
   { colKey: "order", title: "权重", width: 100, align: "center" },
-  { colKey: "operation", title: "操作", width: 150, fixed: "right" },
+  // createdAt updatedAt
+  { colKey: "createdAt", title: "创建时间", width: 200, align: "center" },
+  { colKey: "updatedAt", title: "更新时间", width: 200, align: "center" },
+  { colKey: "operation", title: "操作", width: 120, fixed: "right" },
 ];
 
 const fetchCategories = async () => {
@@ -114,6 +118,7 @@ const handleOpenAdd = () => {
 const handleEdit = (row: any) => {
   editingId.value = row.id;
   formData.value = {
+    id: row.id,
     key: row.key,
     value: row.value,
     order: row.order,
