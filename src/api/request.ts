@@ -5,6 +5,7 @@ import { MessagePlugin } from 'tdesign-vue-next';
 const request = axios.create({
   // 替换为你刚才部署成功的线上 Worker 地址
   baseURL: import.meta.env.VITE_API_URL + import.meta.env.VITE_API_PREFIX,
+  // baseURL: import.meta.env.VITE_API_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'

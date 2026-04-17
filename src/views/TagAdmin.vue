@@ -135,7 +135,7 @@ const submitForm = async () => {
   try {
     if (editingId.value) {
       // 这里的接口建议改为 PUT 或根据 id 更新
-      await updateCategory(editingId.value, formData.value);
+      await updateCategory(formData.value);
       MessagePlugin.success("节点更新成功");
     } else {
       await addCategory(formData.value);
