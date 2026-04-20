@@ -73,7 +73,7 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore();
-  const token = localStorage.getItem("token");
+  const token = userStore.token;
 
   // 1. 如果页面不需要登录，直接通行
   if (to.meta.requiresAuth === false) {

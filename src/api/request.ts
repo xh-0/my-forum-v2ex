@@ -18,7 +18,7 @@ request.interceptors.request.use(
     const userStore = useUserStore();
     const token = userStore.token || localStorage.getItem('token');
     if (token && config.headers) {
-      config.headers.Authorization = `Bearer ${userStore.token}`;
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
