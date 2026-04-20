@@ -15,6 +15,8 @@ export interface Post {
   tag?: string;
 }
 
+export const apiMe = () => request.get('/auth/me');
+
 /**
  * 【用户身份模块】 -> 对应后端 /api/auth
  */

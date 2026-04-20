@@ -7,9 +7,12 @@ import App from './App.vue'
 
 const app = createApp(App)
 
-const pinia = createPinia();
-pinia.use(piniaPluginPersistedstate);
+const pinia = createPinia()
 
-app.use(createPinia())
+// 注册持久化插件
+pinia.use(piniaPluginPersistedstate)
+
+app.use(pinia)
+
 app.use(router)
 app.mount('#app')

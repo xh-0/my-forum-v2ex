@@ -1,9 +1,11 @@
+import { apiMe } from '@/api/forum';
 import { defineStore } from 'pinia';
 
 // 定义 State 的类型
 interface UserState {
   token: string | null;
   username: string | null;
+  userInfo: any;
 }
 
 export const useUserStore = defineStore('user', {
@@ -11,6 +13,7 @@ export const useUserStore = defineStore('user', {
   state: (): UserState => ({
     token: null,
     username: null,
+    userInfo: null,
   }),
 
   // 2. 修饰：基于 state 的计算属性
@@ -22,6 +25,12 @@ export const useUserStore = defineStore('user', {
 
   // 3. 动作：修改 state 的方法（支持同步和异步）
   actions: {
+    async fetchUserInfo() {
+      // 调用后端接口
+      const data = await apiMe();
+      this.userInfo = data;
+    },
+
     // 登录成功存入数据
     setLoginInfo(token: string, username: string) {
       this.token = token;
@@ -30,14 +39,23 @@ export const useUserStore = defineStore('user', {
 
     // 退出登录清空数据
     logout() {
-      this.$reset(); // 快速重置所有状态到初始值
-      // 如果需要跳转，可以在组件中处理，或者在此处引入 router
+      this.$reset(); // 重置所有 state 到初始值
+      localStorage.removeItem('token'); // 清除 localStorage 中的 token
     },
   },
 
-  // 4. 持久化配置：自动与 localStorage 同步
+  // 4. 持久化配置：自动与 localStorage 同步 只存储 token
   persist: {
-    key: 'dusk2-user-storage', // 存储在 localStorage 里的名字
-    storage: localStorage,    // 默认也是 localStorage
+    key: 'token',
+    storage: localStorage,
+    serializer: {
+      deserialize: (value: string) => {
+        const parsed = JSON.parse(value);
+        return { token: parsed };
+      },
+      serialize: (value: any) => {
+        return value.token || '';
+      },
+    },
   },
 });
