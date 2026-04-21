@@ -15,20 +15,32 @@
       </router-link>
 
       <nav class="flex items-center gap-2">
+        <!-- 管理员页面 -->
+        <!-- v-admin -->
+        <t-dropdown :options="adminOptions" @click="handleMenuClick">
+          <t-button variant="text" class="px-2!">
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-medium text-gray-700 hidden sm:inline">
+                管理员页面
+              </span>
+              <t-icon name="chevron-down" size="14px" class="text-gray-400" />
+            </div>
+          </t-button>
+        </t-dropdown>
+        <!-- 用户登录 -->
         <template v-if="!userStore.isLoggedIn">
-          <t-button variant="text" size="small" @click="$router.push('/login')"
-            >登录</t-button
-          >
+          <t-button variant="text" size="small" @click="$router.push('/login')">
+            登录
+          </t-button>
           <t-button
             theme="primary"
             size="small"
             @click="$router.push('/register')"
-            class="!rounded-sm"
+            class="rounded-sm!"
           >
             注册
           </t-button>
         </template>
-
         <template v-else>
           <t-dropdown :options="userOptions" @click="handleMenuClick">
             <t-button variant="text" class="px-2!">
@@ -70,17 +82,14 @@ const userOptions = [
   {
     content: "个人中心",
     value: "profile",
+    path: "/profile",
     prefixIcon: () => h(TIcon, { name: "user" }),
   },
   {
     content: "我的帖子",
     value: "posts",
+    path: "/",
     prefixIcon: () => h(TIcon, { name: "chat" }),
-  },
-  {
-    content: "标签管理",
-    value: "tags",
-    prefixIcon: () => h(TIcon, { name: "tag" }),
   },
   {
     content: "注销登录",
@@ -90,15 +99,20 @@ const userOptions = [
   },
 ];
 
+const adminOptions = [
+  {
+    content: "标签管理",
+    value: "tags",
+    path: "/tagAdmin",
+    prefixIcon: () => h(TIcon, { name: "tag" }),
+  },
+];
+
 const handleMenuClick = (data: any) => {
   if (data.value === "logout") {
     logout();
-  } else if (data.value === "profile") {
-    router.push("/profile");
-  } else if (data.value === "posts") {
-    router.push("/");
-  } else if (data.value === "tags") {
-    router.push("/tagAdmin");
+  } else {
+    router.push(data.path);
   }
 };
 
