@@ -5,7 +5,6 @@ import {
 } from "vue-router";
 import DefaultLayout from "../layouts/DefaultLayout.vue";
 import { useUserStore } from "@/stores/user";
-import { MessagePlugin } from "tdesign-vue-next";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -71,7 +70,7 @@ const router = createRouter({
 //   }
 // });
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to, _from, next) => {
   const userStore = useUserStore();
   const token = userStore.token;
 
