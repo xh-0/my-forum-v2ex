@@ -58,18 +58,6 @@ const router = createRouter({
   routes,
 });
 
-// router.beforeEach((to, from, next) => {
-//   const userStore = useUserStore();
-
-//   // 如果页面需要登录且用户未登录
-//   if (to.meta.requiresAuth && !userStore.isLoggedIn) {
-//     MessagePlugin.warning('请先登录');
-//     next('/login');
-//   } else {
-//     next();
-//   }
-// });
-
 router.beforeEach(async (to, _from, next) => {
   const userStore = useUserStore();
   const token = userStore.token;
@@ -94,6 +82,13 @@ router.beforeEach(async (to, _from, next) => {
       // 校验失败（如 Token 过期），清空 Token，跳回登录页
       userStore.logout();
       return next({ path: "/login" });
+    }
+  }
+
+  if (to.meta.requiresAdmin) {
+    if (!userStore.userInfo?.isAdmin) {
+      alert("无权访问");
+      return next('/'); // 强行踢回首页
     }
   }
 
