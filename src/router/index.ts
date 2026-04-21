@@ -4,7 +4,7 @@ import {
   type RouteRecordRaw,
 } from "vue-router";
 import DefaultLayout from "../layouts/DefaultLayout.vue";
-import { useUserStore } from "@/store/user";
+import { useUserStore } from "@/stores/user";
 import { MessagePlugin } from "tdesign-vue-next";
 
 const routes: RouteRecordRaw[] = [
@@ -86,7 +86,7 @@ router.beforeEach(async (to, from, next) => {
   }
 
   // 3. 有 Token，但 Pinia 里没有用户信息 (说明刚刷新页面或重开了浏览器)
-  if (!userStore.userInfo) {
+  if (!userStore.userMe) {
     try {
       // 在这里调用后端接口校验 Token 是否有效，并获取用户信息
       await userStore.fetchUserInfo();

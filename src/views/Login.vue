@@ -89,9 +89,10 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { login } from "@/api/forum";
-import { useUserStore } from "@/store/user";
+import { useUserStore } from "@/stores/user";
 import { MessagePlugin } from "tdesign-vue-next";
 import { Icon as TIcon } from "tdesign-icons-vue-next";
+import { getMyProfile } from "@/api/user";
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -115,12 +116,10 @@ const handleLogin = async () => {
       username: username.value,
       password: password.value,
     })) as any;
-
-    // 使用 Pinia 存储，由于开启了 persist，插件会自动处理 localStorage
     userStore.setLoginInfo(res.token, res.user.username);
-
+    // 获取用户info
+    await getUserInfo();
     MessagePlugin.success("欢迎回来，" + res.user.username);
-
     // 跳转到首页
     router.push("/");
   } catch (err: any) {
@@ -131,6 +130,14 @@ const handleLogin = async () => {
       "登录失败，请检查网络或账号密码";
   } finally {
     loading.value = false;
+  }
+};
+
+const getUserInfo = async () => {
+  const res: any = await getMyProfile();
+  // console.log("res: ", res);
+  if (res.user) {
+    userStore.setUserInfo(res.user);
   }
 };
 </script>

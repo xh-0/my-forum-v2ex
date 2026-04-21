@@ -119,7 +119,7 @@ import { useRoute } from "vue-router";
 import { getPostDetail, addComment } from "@/api/forum";
 import { MessagePlugin } from "tdesign-vue-next";
 
-import { useUserStore } from "@/store/user";
+import { useUserStore } from "@/stores/user";
 
 const route = useRoute();
 const userStore = useUserStore();

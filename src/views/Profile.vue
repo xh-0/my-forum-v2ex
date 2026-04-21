@@ -77,8 +77,11 @@
             回复记录功能开发中...
           </div>
         </t-tab-panel>
+        <t-tab-panel value="userSet" label="个人资料">
+          <UserSet />
+        </t-tab-panel>
 
-        <t-tab-panel value="settings" label="账户设置">
+        <t-tab-panel value="settings" label="密码设置">
           <div class="p-6 max-w-md mx-auto">
             <t-form label-align="top">
               <t-form-item label="用户名">
@@ -87,12 +90,18 @@
               <t-form-item label="新密码">
                 <t-input type="password" placeholder="留空则不修改" />
               </t-form-item>
-              <t-button
-                block
-                theme="primary"
-                class="!bg-[#333] !border-none mt-4"
-                >保存设置</t-button
-              >
+              <t-form-item label="再次输入新密码">
+                <t-input type="password" placeholder="留空则不修改" />
+              </t-form-item>
+              <t-form-item label="">
+                <t-button
+                  block
+                  theme="primary"
+                  class="bg-[#333]! border-none! mt-4"
+                >
+                  保存
+                </t-button>
+              </t-form-item>
             </t-form>
           </div>
         </t-tab-panel>
@@ -103,9 +112,10 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { useUserStore } from "@/store/user";
+import { useUserStore } from "@/stores/user";
 import { getPostList } from "@/api/forum"; // 复用获取列表接口，后续可加过滤参数
 import { Icon as TIcon } from "tdesign-icons-vue-next";
+import UserSet from "@/views/user/userSet.vue";
 
 const userStore = useUserStore();
 const activeTab = ref("posts");

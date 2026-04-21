@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useUserStore } from '@/store/user';
+import { useUserStore } from '@/stores/user';
 import { MessagePlugin } from 'tdesign-vue-next';
 
 const request = axios.create({
